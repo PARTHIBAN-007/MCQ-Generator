@@ -12,6 +12,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+
 @app.post("/data")
 async def questions():
     response = llm_response()
