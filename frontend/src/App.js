@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 const App = () => {
@@ -11,8 +11,10 @@ const App = () => {
   const [answers, setAnswers] = useState([]);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleSubmitForm = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await axios.post("http://localhost:8000/generate-quiz", {
         topic,
@@ -31,6 +33,8 @@ const App = () => {
     } catch (error) {
       console.error("Error fetching quiz:", error.response ? error.response.data : error.message);
       alert(`Error fetching quiz: ${error.response ? JSON.stringify(error.response.data) : error.message}`);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -64,8 +68,6 @@ const App = () => {
   const renderQuestionResult = (question, index) => {
     const userAnswer = answers[index];
     const correctAnswer = question.answer;
-    console.log(question.answer);
-    console.log(correctAnswer);
     const isCorrect = userAnswer === correctAnswer;
 
     return (
@@ -77,7 +79,7 @@ const App = () => {
       >
         <p className="text-lg font-semibold">Q{index + 1}: {question.question}</p>
         <p className="mt-2">Your Answer: <span className={`font-medium ${isCorrect ? "text-green-600" : "text-red-600"}`}>{question.options[userAnswer]}</span></p>
-        <p className="mt-1">Correct Answer: <span className="font-medium text-blue-600">{question.options[correctAnswer]}</span></p>
+        <p className="mt-1">Correct Answer: <span className="font-medium text-yellow-600">{question.options[correctAnswer]}</span></p>
         <p className="mt-1 text-indigo-600">Marks Awarded: {isCorrect ? 1 : 0}</p>
       </div>
     );
@@ -86,10 +88,9 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-6">Interactive Quiz Application</h1>
+        <h1 className="text-3xl text-yellow-400 font-bold text-center mb-6">MindQuest</h1>
 
-        {/* Quiz Configuration Form */}
-        {!questions.length && !showResult && (
+        {!questions.length && !showResult && !loading && (
           <div>
             <h2 className="text-2xl font-semibold mb-4">Configure Your Quiz</h2>
             <div className="space-y-4">
@@ -132,10 +133,17 @@ const App = () => {
             </div>
             <button
               onClick={handleSubmitForm}
-              className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 mt-6 hover:bg-blue-700 transition"
+              className="w-full bg-green-500 text-white rounded-lg px-4 py-2 mt-6 hover:bg-green-600 transition"
             >
               Generate Quiz
             </button>
+          </div>
+        )}
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="flex items-center justify-center h-64">
+            <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
           </div>
         )}
 
@@ -176,7 +184,6 @@ const App = () => {
           </div>
         )}
 
-        {/* Quiz Results Section */}
         {showResult && (
           <div>
             <h2 className="text-3xl font-bold mb-6">Quiz Results</h2>
@@ -197,7 +204,7 @@ const App = () => {
                 setScore(0);
                 setShowResult(false);
               }}
-              className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 mt-6 hover:bg-blue-700 transition"
+              className="w-full bg-yellow-400 text-white rounded-lg px-4 py-2 mt-6 hover:bg-yellow-700 transition"
             >
               Restart Quiz
             </button>

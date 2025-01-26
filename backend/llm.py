@@ -33,7 +33,6 @@ Return the text in lower case
     - answer
 
 **Output Example**:
-
     Question: What is 5 + 3?
     
     Options:
@@ -43,6 +42,8 @@ Return the text in lower case
     d) 9
     Difficulty Level: Easy
     Answer: c) 8    
+Make the Answer is Shuffled in the Options
+Never uses the first option as answer
 
 """
 
