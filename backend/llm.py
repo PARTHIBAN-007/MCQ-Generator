@@ -51,6 +51,7 @@ def generate_prompt(Topic, Level, Nquestions, Easy, Medium, Hard):
 def analyze_prompt(prompt_text):
     response = model.generate_content(prompt_text)
     return response.text
+
 json_prompt_format = """
 Convert the following into Json Format Only Returns the Json output 
 Content to convert the JSon format : {content}
